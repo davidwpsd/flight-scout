@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新手必读（3 步搞定）</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 20px 80px;
+  background: #f4f7fb; color: #16202e;
+  font: 15px/1.75 system-ui, -apple-system, "Segoe UI", "PingFang HK", "Microsoft JhengHei", sans-serif;
+}
+main { max-width: 780px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f2;
+  border-radius: 16px; padding: 34px 40px; box-shadow: 0 18px 50px -34px rgba(22,32,46,.5); }
+h1 { font-size: 26px; margin: 0 0 6px; }
+h2 { font-size: 19px; margin: 34px 0 10px; padding-top: 14px; border-top: 1px solid #eef2f8; }
+h2:first-of-type { border-top: 0; padding-top: 0; }
+h3 { font-size: 16px; margin: 22px 0 8px; }
+p { margin: 10px 0; }
+a { color: #0d9488; }
+strong { color: #0f172a; }
+code { background: #f2f5fa; border-radius: 5px; padding: 2px 6px; font-size: 13px;
+  font-family: ui-monospace, Consolas, monospace; }
+pre { background: #0f172a; color: #e8eefb; padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
+pre code { background: none; color: inherit; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+th, td { border: 1px solid #e2e8f2; padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f7f9fc; font-weight: 650; }
+tr:nth-child(even) td { background: #fbfcfe; }
+ul, ol { margin: 10px 0; padding-left: 24px; }
+li { margin: 5px 0; }
+blockquote { margin: 14px 0; padding: 10px 14px; background: #fff8ec; border-left: 3px solid #d9a441;
+  border-radius: 0 8px 8px 0; color: #6b5323; }
+blockquote p { margin: 4px 0; }
+hr { border: 0; border-top: 1px solid #eef2f8; margin: 26px 0; }
+footer { max-width: 780px; margin: 18px auto 0; color: #8b99ad; font-size: 12px; text-align: center; }
+@media (max-width: 640px) { body { padding: 16px 10px 40px; } main { padding: 22px 18px; border-radius: 12px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>新手必读（3 步搞定）</h1>
+<p>完全不用敲命令、不用装东西。跟着做就行。</p>
+<hr>
+<h2>第 1 步：双击打开</h2>
+<p>在 <code>flight-scout</code> 文件夹里，双击：</p>
+<pre><code>启动.cmd</code></pre>
+<p>会弹出一个黑色窗口（别关它，关掉工具就停了），然后<strong>浏览器会自动打开</strong>。</p>
+<p>如果浏览器没自动打开，手动在地址栏输入：</p>
+<pre><code>http://127.0.0.1:8777</code></pre>
+<blockquote><p>窗口里出现一堆英文不用管，只要看到 <code>http://127.0.0.1:8777</code> 就说明成功了。</p></blockquote>
+<hr>
+<h2>第 2 步：先随便玩玩</h2>
+<p>打开后你会看到一整屏的航班排行。这时的价格是<strong>示例数据</strong>——右上角有个<strong>黄色小标签</strong>写着「演示数据」。</p>
+<p>你可以直接试这些（不会弄坏任何东西）：</p>
+<ul>
+<li>点上面的 <strong>圣诞主场 / 跨年长线 / 错峰捡漏</strong> 三个按钮，看不同假期的结果</li>
+<li>最左边的 <strong>出发地</strong> 可以换成深圳、广州、长沙、成都等（换完自动重查）</li>
+<li>点区域按钮（日本、东南亚……）只看某个地区</li>
+<li>点表格里每行右边的 <strong>Google</strong> 或 <strong>Trip</strong>，会跳到真实订票网站</li>
+<li>右上角的 <strong>🌙 / ☀️</strong> 可以切换深色/浅色，默认浅色</li>
+</ul>
+<hr>
+<h2>第 3 步：换成真实价格（重点）</h2>
+<blockquote><p>先看一眼右上角：如果已经是<strong>绿色「实时」</strong>，说明密钥配好了，这一步可以跳过。</p></blockquote>
+<p><strong>点右上角那个黄色标签</strong>，会弹出一个设置框（长这样）：</p>
+<p>!<a href="docs/setup.png" target="_blank" rel="noopener noreferrer">设置窗口</a></p>
+<p>保持选中「<strong>SerpApi · 推荐</strong>」这一栏，然后：</p>
+<ol>
+<li>点框里的蓝色链接 <code>serpapi.com/users/sign_up</code>（免费注册，邮箱或 Google 账号都行，英文网站）</li>
+<li>登录后进入 <strong>Dashboard</strong>，找到 <strong>Your Private API Key</strong> 那一串字符</li>
+<li>复制，粘贴到框里的输入框</li>
+<li>点「<strong>保存并测试</strong>」</li>
+</ol>
+<p>成功的话，右上角标签会变成<strong>绿色「实时」</strong>，价格就是真的了。</p>
+<blockquote><p>免费额度是每月 250 次，一次搜索大约用 5 次，够用 50 次左右；同一组条件重复看不会重复扣。</p></blockquote>
+<hr>
+<h2>想分享给同事？</h2>
+<p><strong>如果同事和你连的是同一个 Wi-Fi / 公司网络</strong>：双击 <strong><code>共享给同事.cmd</code></strong>，</p>
+<p>黑窗口里会多出一行「同事访问 http://192.168.x.x:8777」，把这行发给他们，他们用浏览器打开就能用，什么都不用装。</p>
+<ul>
+<li>同事能查询、看结果、导出表格，但改不了密钥（只有你的电脑能改）</li>
+<li>你的电脑得开着，关掉窗口就没了</li>
+<li>第一次运行时 Windows 可能弹防火墙提示，勾「专用网络」允许即可</li>
+</ul>
+<p><strong>如果同事不在同一个网络</strong>（比如在家、在外地），那就需要放到一台公网服务器上，</p>
+<p>这步比较折腾，需要的话告诉我，我帮你选方案。</p>
+<hr>
+<h2>常见问题</h2>
+<p><strong>Q：黑色窗口能关吗？</strong></p>
+<p>不能。它就是工具本身，关掉网页就打不开了。不用的时候关掉即可，下次再双击 <code>启动.cmd</code>。</p>
+<p><strong>Q：双击没反应 / 一闪而过？</strong></p>
+<p>说明找不到 Python。工具需要电脑里有 Python 3.10 以上版本。装好后重新双击即可。</p>
+<p>（如果这台电脑装过，通常已经能用了。）</p>
+<p><strong>Q：Amadeus 那个注册页面打不开了？</strong></p>
+<p>对，<strong>Amadeus 的免费自助版在 2026 年 7 月 17 日已经关停</strong>，现在只给企业客户用。</p>
+<p>用设置框里第一栏的 <strong>SerpApi</strong> 就行，比它更好用。</p>
+<p><strong>Q：填了密钥但没变绿？</strong></p>
+<p>设置框里会显示红色的错误原因。最常见的是复制时少了字符，重新复制一遍 key（注意前后不要带空格）。</p>
+<p><strong>Q：安全吗？密钥会不会被上传？</strong></p>
+<p>不会。密钥只写在你本机的 <code>flight-scout\config.json</code> 文件里，工具只跟 SerpApi 官方服务器通信。</p>
+<p><strong>Q：价格准吗？</strong></p>
+<p>价格实时变动，工具的作用是<strong>帮你把 90 多个目的地一次排好序</strong>，最终以航空公司或 Trip.com 结账页为准。</p>
+<p><strong>Q：想换出发日期怎么办？</strong></p>
+<p>页面上「出发窗口 / 返程窗口 / 停留晚数」直接改，点「查询最便宜」。</p>
+</main>
+<footer>本页由 新手必读.md 自动生成 · 用浏览器打开即可</footer>
+</body>
+</html>

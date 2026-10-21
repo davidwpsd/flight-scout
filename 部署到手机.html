@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>部署到手机（iPhone / 安卓都能用）</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 20px 80px;
+  background: #f4f7fb; color: #16202e;
+  font: 15px/1.75 system-ui, -apple-system, "Segoe UI", "PingFang HK", "Microsoft JhengHei", sans-serif;
+}
+main { max-width: 780px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f2;
+  border-radius: 16px; padding: 34px 40px; box-shadow: 0 18px 50px -34px rgba(22,32,46,.5); }
+h1 { font-size: 26px; margin: 0 0 6px; }
+h2 { font-size: 19px; margin: 34px 0 10px; padding-top: 14px; border-top: 1px solid #eef2f8; }
+h2:first-of-type { border-top: 0; padding-top: 0; }
+h3 { font-size: 16px; margin: 22px 0 8px; }
+p { margin: 10px 0; }
+a { color: #0d9488; }
+strong { color: #0f172a; }
+code { background: #f2f5fa; border-radius: 5px; padding: 2px 6px; font-size: 13px;
+  font-family: ui-monospace, Consolas, monospace; }
+pre { background: #0f172a; color: #e8eefb; padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
+pre code { background: none; color: inherit; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+th, td { border: 1px solid #e2e8f2; padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f7f9fc; font-weight: 650; }
+tr:nth-child(even) td { background: #fbfcfe; }
+ul, ol { margin: 10px 0; padding-left: 24px; }
+li { margin: 5px 0; }
+blockquote { margin: 14px 0; padding: 10px 14px; background: #fff8ec; border-left: 3px solid #d9a441;
+  border-radius: 0 8px 8px 0; color: #6b5323; }
+blockquote p { margin: 4px 0; }
+hr { border: 0; border-top: 1px solid #eef2f8; margin: 26px 0; }
+footer { max-width: 780px; margin: 18px auto 0; color: #8b99ad; font-size: 12px; text-align: center; }
+@media (max-width: 640px) { body { padding: 16px 10px 40px; } main { padding: 22px 18px; border-radius: 12px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>部署到手机（iPhone / 安卓都能用）</h1>
+<p>做完之后你会得到一个网址。iPhone 上用 <strong>Safari</strong> 打开 → 分享 → <strong>添加到主屏幕</strong>，</p>
+<p>桌面上就多了一个图标，点开是全屏的工具，和 App 用起来没区别。</p>
+<p>同事也拿同一个链接，各自加主屏幕即可。</p>
+<p><strong>整个过程不用写代码，大约 10 分钟。</strong></p>
+<hr>
+<h2>开始之前</h2>
+<ul>
+<li>一个 GitHub 账号（免费注册：<a href="https://github.com/signup" target="_blank" rel="noopener noreferrer">https://github.com/signup</a>）</li>
+<li>你的 SerpApi key（就是之前填进设置框的那串）</li>
+<li>建议装一个 <strong>GitHub Desktop</strong>（<a href="https://desktop.github.com/" target="_blank" rel="noopener noreferrer">https://desktop.github.com/</a>），比网页上传省事很多</li>
+</ul>
+<hr>
+<h2>第 1 步：建一个仓库</h2>
+<ol>
+<li>打开 <a href="https://github.com/new" target="_blank" rel="noopener noreferrer">https://github.com/new</a></li>
+<li><strong>Repository name</strong> 填 <code>flight-scout</code></li>
+<li>选 <strong>Public</strong>（重要，见下面的说明）</li>
+<li>点 <strong>Create repository</strong></li>
+</ol>
+<blockquote><p><strong>为什么必须选 Public？</strong></p><p>公开仓库的 GitHub Actions 是<strong>无限免费</strong>的；私有仓库每月只有 2000 分钟额度，而且 Pages 也要付费。</p><p>公开的只是代码，<strong>你的密钥不会出现在代码里</strong>（下一步会单独存到 Secrets）。</p></blockquote>
+<hr>
+<h2>第 2 步：把文件传上去</h2>
+<h3>方法 A：GitHub Desktop（推荐）</h3>
+<ol>
+<li>打开 GitHub Desktop → <strong>File → Clone repository</strong> → 选你刚建的 <code>flight-scout</code></li>
+<li>选一个本地位置（比如桌面），Clone</li>
+<li>打开 Clone 下来的文件夹，把<strong>本地 flight-scout 文件夹里的所有内容</strong>复制进去</li>
+<li>回到 GitHub Desktop，左下角填一句说明（比如 <code>init</code>），点 <strong>Commit to main</strong></li>
+<li>点右上角 <strong>Push origin</strong></li>
+</ol>
+<h3>方法 B：网页上传</h3>
+<p>仓库首页 → <strong>Add file → Upload files</strong> → 把文件拖进去 → <strong>Commit changes</strong>。</p>
+<p>⚠️ 两种方法都要注意：<strong>不要上传这些</strong>（有的话删掉再传）</p>
+<table><thead><tr><th>不要上传</th><th>原因</th></tr></thead><tbody>
+<tr><td><code>config.json</code></td><td><strong>里面是你的密钥</strong></td></tr>
+<tr><td><code>site/</code> 文件夹</td><td>服务器会自动生成</td></tr>
+<tr><td><code>__pycache__/</code></td><td>缓存垃圾</td></tr>
+<tr><td><code>.git</code> 文件夹</td><td>会把旧历史带进去</td></tr>
+</tbody></table>
+<hr>
+<h2>第 3 步：把密钥存进 Secrets</h2>
+<ol>
+<li>仓库页面 → <strong>Settings</strong> → 左侧 <strong>Secrets and variables</strong> → <strong>Actions</strong></li>
+<li>点 <strong>New repository secret</strong></li>
+<li><strong>Name</strong> 填：<code>SERPAPI_KEY</code></li>
+<li><strong>Secret</strong> 粘贴你的 key（前后不要有空格）</li>
+<li><strong>Add secret</strong></li>
+</ol>
+<blockquote><p>这里存的东西不会出现在代码、日志或网页里。这是唯一安全的放法。</p></blockquote>
+<hr>
+<h2>第 4 步：开启 Pages</h2>
+<ol>
+<li><strong>Settings</strong> → 左侧 <strong>Pages</strong></li>
+<li><strong>Build and deployment</strong> → <strong>Source</strong> 选 <strong>GitHub Actions</strong></li>
+<li>不用点别的，保存即可</li>
+</ol>
+<hr>
+<h2>第 5 步：跑第一次</h2>
+<ol>
+<li>仓库页面 → <strong>Actions</strong> 标签</li>
+<li>左侧看到 <strong>Update prices</strong> → 点进去 → 右边 <strong>Run workflow</strong> → 绿色按钮</li>
+<li>等 1～2 分钟，两个任务变绿（build ✅ deploy ✅）</li>
+<li>点 <strong>deploy</strong> 那一步，会看到一行网址：</li>
+</ol>
+<pre><code>https://你的用户名.github.io/flight-scout/</code></pre>
+<p>这就是你的工具地址。</p>
+<blockquote><p>如果第一次跑挂了：点进去看红色那一步的日志。最常见是两个原因——</p><p>① 忘了加 <code>SERPAPI_KEY</code>；② key 输了但多了空格。</p></blockquote>
+<hr>
+<h2>第 6 步：加到 iPhone 主屏幕</h2>
+<ol>
+<li><strong>必须用 Safari</strong>（Chrome 加到主屏幕会变成一个普通书签，不会全屏）</li>
+<li>打开上面那个网址</li>
+<li>点底部中间的 <strong>分享</strong> 按钮（方框带向上箭头）</li>
+<li>往下滑，选 <strong>添加到主屏幕</strong></li>
+<li>名字可以改成「机票雷达」，点 <strong>添加</strong></li>
+</ol>
+<p>桌面上就有图标了。点开是全屏，没有地址栏。</p>
+<hr>
+<h2>分享给同事</h2>
+<p>把同一个网址发给对方，让他们用 Safari 打开、同样「添加到主屏幕」即可。</p>
+<ul>
+<li>对方不需要注册任何东西，也不需要 key</li>
+<li>他们看到的是<strong>每天更新的快照</strong>，不是实时价格</li>
+<li>他们点行尾的 Google / Trip 可以去核对当下价格</li>
+</ul>
+<hr>
+<h2>日常维护</h2>
+<table><thead><tr><th>事情</th><th>怎么做</th></tr></thead><tbody>
+<tr><td>价格什么时候更新</td><td>每天早上 7 点（香港时间）自动跑一次</td></tr>
+<tr><td>想立刻更新</td><td>Actions → Update prices → Run workflow</td></tr>
+<tr><td>想换出发地</td><td>改 <code>.github/workflows/update-prices.yml</code> 里的 <code>ORIGINS: HKG</code>（逗号分隔多个城市）</td></tr>
+<tr><td>想改日期窗口</td><td>同上，给 <code>export-site</code> 加 <code>--depart</code>/<code>--return</code> 参数</td></tr>
+<tr><td>想改样式</td><td>改 <code>web/style.css</code>，push 后重新跑一次 Actions</td></tr>
+</tbody></table>
+<hr>
+<h2>常见问题</h2>
+<p><strong>Q：页面上写「快照更新于 10-21 07:00」，是实时的吗？</strong></p>
+<p>不是。GitHub 只有定时任务，没有常驻服务器，所以价格是上次抓取的结果。想查此刻价格，点行尾的 Google / Trip。</p>
+<p><strong>Q：额度够吗？</strong></p>
+<p>一次抓取约 5 次调用，一天一次 ≈ 150 次/月，免费额度 250 次/月，够用。<strong>别把 <code>ORIGINS</code> 加太多</strong>，每个城市都会多 5 次。</p>
+<p><strong>Q：三个月后突然不更新了？</strong></p>
+<p>GitHub 会自动停掉「长期无提交」仓库的定时任务。去 Actions 点一次 <strong>Run workflow</strong> 就恢复了。</p>
+<p><strong>Q：链接被别人转发了怎么办？</strong></p>
+<p>对方只能看到价格，<strong>拿不到你的密钥</strong>。但他们查询也会消耗你的额度。介意的话去 SerpApi 后台重置 key，再更新 Secret。</p>
+<p><strong>Q：能收降价推送吗？</strong></p>
+<p>目前不行。这需要常驻服务器 + 推送服务，iPhone 上还要 iOS 16.4 以上并装到主屏幕。以后想做可以加。</p>
+<p><strong>Q：为什么不用 App Store？</strong></p>
+<p>要 99 美元/年 + 一台 Mac + 每次审核等待，而且苹果对「网页套壳」的 App 基本会拒。这个工具用链接 + 主屏幕完全够。</p>
+</main>
+<footer>本页由 部署到手机.md 自动生成 · 用浏览器打开即可</footer>
+</body>
+</html>

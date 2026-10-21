@@ -1,0 +1,12 @@
+# 本地密钥与运行时产物，不要提交
+config.json
+
+# GitHub Pages 构建产物（由 Actions 生成，不需要提交）
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 运行时数据（缓存、截图等）
+data/

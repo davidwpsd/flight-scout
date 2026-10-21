@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Scout · 香港出发，圣诞去哪儿最便宜</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+<script>
+  // Apply the saved theme before styles paint, so there is no flash.
+  (function () {
+    try {
+      document.documentElement.dataset.theme = localStorage.getItem("fs-theme") || "light";
+    } catch (e) {
+      document.documentElement.dataset.theme = "light";
+    }
+  })();
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">✈</span>
+      <div class="brand-text">
+        <h1>Flight Scout</h1>
+        <p>香港出发 · 假期去哪儿最便宜</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button id="themeBtn" class="btn ghost icon" type="button" title="切换深浅色" aria-label="切换深浅色">🌙</button>
+      <button id="providerPill" class="pill pill-muted" type="button" title="查看 / 修改数据源设置">载入中…</button>
+      <button id="exportBtn" class="btn ghost" type="button">导出 CSV</button>
+    </div>
+  </header>
+
+  <section class="panel controls">
+    <div class="presets" id="presets"></div>
+
+    <div class="control-grid">
+      <div class="field">
+        <label for="origin">出发地</label>
+        <select id="origin" class="select" aria-label="出发地"></select>
+      </div>
+
+      <div class="field">
+        <label>出发窗口</label>
+        <div class="date-pair">
+          <input type="date" id="departFrom" aria-label="出发起始">
+          <span class="dash">→</span>
+          <input type="date" id="departTo" aria-label="出发结束">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>返程窗口</label>
+        <div class="date-pair">
+          <input type="date" id="returnFrom" aria-label="返程起始">
+          <span class="dash">→</span>
+          <input type="date" id="returnTo" aria-label="返程结束">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>停留晚数</label>
+        <div class="num-pair">
+          <input type="number" id="nightsMin" min="1" max="40" step="1" aria-label="最少晚数">
+          <span class="dash">–</span>
+          <input type="number" id="nightsMax" min="1" max="40" step="1" aria-label="最多晚数">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>预算上限 <span class="unit">HKD</span></label>
+        <input type="number" id="maxPrice" placeholder="不限" min="0" step="100">
+      </div>
+    </div>
+
+    <div class="row row-wrap">
+      <div class="chips" id="regionChips"></div>
+      <div class="row-right">
+        <label class="switch">
+          <input type="checkbox" id="directOnly">
+          <span>只看直飞</span>
+        </label>
+        <select id="sort" class="select" aria-label="排序方式">
+          <option value="price" selected>价格最低</option>
+          <option value="deal">综合性价比</option>
+          <option value="value">每公里最划算</option>
+          <option value="distance">距离最近</option>
+          <option value="nights">停留最久</option>
+        </select>
+        <button id="searchBtn" class="btn primary" type="button">查询最便宜</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" id="stats"></section>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>各区域最低价</h2>
+        <span class="hint">点条形筛选</span>
+      </div>
+      <div id="regionChart" class="chart"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>价格 × 距离</h2>
+        <span class="hint">左上角＝又近又便宜</span>
+      </div>
+      <div id="scatter" class="chart"></div>
+    </section>
+  </div>
+
+  <section class="panel results">
+    <div class="panel-head">
+      <h2>目的地排行</h2>
+      <span class="hint" id="resultMeta"></span>
+    </div>
+    <div class="table-wrap">
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th class="c-rank">#</th>
+            <th class="c-dest">目的地</th>
+            <th class="c-price">往返价</th>
+            <th class="c-dates">日期</th>
+            <th class="c-air">航司 / 转机</th>
+            <th class="c-dur">航程</th>
+            <th class="c-score">性价比</th>
+            <th class="c-links">查价</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <div id="empty" class="empty hidden">
+      <p>没有符合条件的目的地</p>
+      <p class="muted">试试放宽日期、提高预算，或取消「只看直飞」。</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div id="footerNote"></div>
+    <div>价格含税参考价 · 下单前请以航空公司 / OTA 实时报价为准</div>
+  </footer>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div id="setupModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="setupTitle">开启真实票价</h3>
+      <button id="closeSetup" class="icon-btn" type="button" aria-label="关闭">✕</button>
+    </div>
+
+    <p class="modal-lead">
+      现在显示的是<strong>演示数据</strong>（示例价格，不是真的）。<br>
+      选一个数据源填入密钥，就能查到真实机票价。密钥只保存在你电脑上的
+      <code>config.json</code> 里，不会上传到任何地方。
+    </p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" type="button" data-tab="serpapi" role="tab">SerpApi · 推荐</button>
+      <button class="tab" type="button" data-tab="travelpayouts" role="tab">Travelpayouts</button>
+      <button class="tab" type="button" data-tab="amadeus" role="tab">Amadeus</button>
+    </div>
+
+    <div class="tab-panel" data-panel="serpapi">
+      <ol class="steps">
+        <li>打开 <a href="https://serpapi.com/users/sign_up" target="_blank" rel="noopener noreferrer">serpapi.com/users/sign_up</a> 注册（邮箱或 Google 账号，免费 250 次/月）</li>
+        <li>登录后进入 <em>Dashboard</em>，复制 <em>Your Private API Key</em></li>
+        <li>粘贴到下面，点「保存并测试」</li>
+      </ol>
+      <div class="field">
+        <label for="serpapiKey">Private API Key</label>
+        <input id="serpapiKey" type="text" autocomplete="off" spellcheck="false" placeholder="粘贴 Private API Key">
+      </div>
+      <p class="mini">数据来自 Google Flights，返回的是真实<strong>往返</strong>含税价。</p>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="travelpayouts">
+      <ol class="steps">
+        <li>打开 <a href="https://www.travelpayouts.com/" target="_blank" rel="noopener noreferrer">travelpayouts.com</a> 注册并进入个人中心</li>
+        <li>复制你的 <em>API token</em>，粘贴到下面</li>
+      </ol>
+      <div class="field">
+        <label for="travelpayoutsToken">API token</label>
+        <input id="travelpayoutsToken" type="text" autocomplete="off" spellcheck="false" placeholder="粘贴 token">
+      </div>
+      <p class="mini">覆盖廉价航空特价，但返回的多是<strong>单程</strong>价，适合用来比价排序。</p>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="amadeus">
+      <p class="mini">
+        Amadeus 的<strong>免费自助版已于 2026 年 7 月 17 日下线</strong>，现在只有企业合同账号才有密钥。
+        如果你手上确实有企业密钥，填在下面。
+      </p>
+      <div class="field">
+        <label for="amadeusId">API Key</label>
+        <input id="amadeusId" type="text" autocomplete="off" spellcheck="false" placeholder="粘贴 API Key">
+      </div>
+      <div class="field">
+        <label for="amadeusSecret">API Secret</label>
+        <input id="amadeusSecret" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴 API Secret">
+      </div>
+      <div class="field">
+        <label for="amadeusEnv">环境</label>
+        <select id="amadeusEnv">
+          <option value="test">测试环境（先试通，航线较少）</option>
+          <option value="production">正式环境（真实香港航线）</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="setupStatus" class="setup-status"></div>
+
+    <div class="modal-actions">
+      <button id="saveSetup" class="btn primary" type="button">保存并测试</button>
+      <button id="cancelSetup" class="btn ghost" type="button">以后再说</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
