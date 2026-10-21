@@ -1,0 +1,61 @@
+yaml
+
+
+name: Update prices
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  ORIGINS: HKG
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 检查密钥
+        run: |
+          if [ -z "${SERPAPI_KEY}" ]; then
+            echo "::error::没有找到 SERPAPI_KEY，请到 Settings → Secrets 添加"
+            exit 1
+          fi
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+
+      - name: 抓取并生成站点
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: |
+          python flightscout.py export-site --out site --origins "${ORIGINS}" --provider auto
+          du -sh site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
